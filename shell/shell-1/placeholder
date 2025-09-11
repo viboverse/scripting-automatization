@@ -1,0 +1,68 @@
+# Task 1
+
+num1=$1
+num2=$2
+
+sum=$(( num1 + num2))
+sub=$(( num1 - num2))
+mul=$(( num1 * num2))
+
+echo "Addition: $sum"
+echo "Subtraction: $sub"
+echo "multiplication: $mul"
+
+
+
+# Task 2
+
+#!/bin/bash
+
+echo 'Enter filename'
+read filename
+
+today=$(date +%Y-%m-%d)
+
+newfile="${filename}_${today}"
+
+touch ~/$newfile
+
+echo 'file created: ~/$newfile'
+
+
+
+# Task 3
+#!/bin/bash
+
+echo "Enter directory path:"
+read dir
+
+count=$(ls "$dir" 2>/dev/null | wc -l)
+echo "Number of objects in $dir: $count"
+
+
+
+# Task 4
+#!/bin/bash
+
+echo 'Enter the source file path:'
+read src
+
+echo 'Enter the desination path:'
+read dest
+
+cp "$src" "$dest"
+
+echo "Copied the \"$src" to \"$dest\"
+
+
+
+# task 5
+#!/bin/bash
+
+echo "Name 3 files, I will remove it for you:"
+read file1 file2 file3
+
+rm "$HOME/$file1" "$HOME/$file2" "$HOME/$file3"
+
+echo "i deleted the following files: $file1,$file2,$file3"
+
