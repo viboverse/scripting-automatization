@@ -1,0 +1,86 @@
+# Task 1
+#!/bin/bash
+
+echo "Enter filename to remove"
+read input
+
+if [ -f "$input" ] && [ ! -s "$input" ]
+then
+  rm -- "$input"
+  echo "File '$input' removed succesfully!"
+else
+  if [! -f "$input" ]
+then
+  echo "Error: '$input' is not a regular file"
+  elif [ -s "$input" ]
+  then
+  echo "Error: '$input' is not empty, can not be removed"
+  fi
+fi
+
+
+# Task 2
+#!/bin/bash
+
+if [ -f /etc/hosts ]
+then
+  echo "/etc/hosts available"
+
+  if [ -w /etc/hosts ]
+  then
+  echo "You have permission to edit the file"
+  else
+    echo "You dont have permission to edit the file"
+  fi
+else
+  echo "/etc/hosts does not exist"
+fi
+
+
+# Task 3
+#!/bin/bash
+
+read -p "Enter paths (separated by spaces): " input
+
+# Loop through each path
+for path in ${input}
+do
+  if [ -d "${path}" ]
+  then
+    echo "${path} is a directory"
+  elif [ -f "${path}" ]
+  then
+    echo "${path} is a file" 
+  elif [ -e "${path}" ]
+  then
+    echo "${path} is something else"
+  else
+    echo "${path} does not exist"
+  fi
+done
+
+
+# Task 4
+#!/bin/bash
+read -p "Enter username to create: " username
+
+if [ -z "${username}" ]
+then
+  echo "Error: No username provided"
+  exit 1
+fi
+
+if id -u "${username}"
+then
+  echo "Error: User '${username}' already exists"
+else
+  echo "Creating user '${username}'..."
+  sudo useradd -m -d "/home/${username}" -s "/bin/bash" "${username}"
+  
+  if [ $? -eq 0 ]
+  then
+    echo "User '${username}' created successfully"
+  else
+    echo "Error: Failed to create user '${username}'"
+  fi
+fi
