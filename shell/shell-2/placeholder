@@ -84,3 +84,49 @@ else
     echo "Error: Failed to create user '${username}'"
   fi
 fi
+
+
+# Task 5
+
+
+#!/bin/bash
+
+
+while [ true ]
+do
+  read -p "Choose operation (+, -, *, /) or type 'exit' to quit: " op
+
+  if [ "$op" = "exit" ]
+  then
+    echo "Exiting calculator!"
+    break
+  fi
+
+  if [ "$op" = "+" ] || [ "$op" = "-" ] || [ "$op" = "*" ] || [ "$op" = "/" ]
+  then
+    read -p "Enter first number: " num1
+    read -p "Enter second number: " num2
+
+    if [ "$op" = "+" ]
+    then
+      result=$((num1 + num2))
+    elif [ "$op" = "-" ]
+    then
+      result=$((num1 - num2))
+    elif [ "$op" = "/" ] && [ "$num2" -eq 0 ]
+    then
+      result="undefined"
+    elif [ "$op" = "*" ]
+    then
+      result=$((num1 * num2))
+    elif [ "$op" = "/" ]
+    then
+      result=$((num1 / num2))
+    fi
+
+    echo "Result: $result"
+  else
+    echo "Invalid operation. Try again."
+  fi
+
+done
