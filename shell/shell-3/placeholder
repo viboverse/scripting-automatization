@@ -1,0 +1,117 @@
+# Task 1
+#!/bin/bash
+
+VALUES=()
+
+while true
+do
+  read -p "Enter value: " input
+
+  if [ "${input}" = "exit" ]
+  then
+    break
+  fi
+
+  VALUES+=("${input}")  
+done
+
+echo "Array contents:"
+
+for key in "${!VALUES[@]}"
+do
+  echo "${key}: ${VALUES[$key]}"
+done
+
+
+# Task 2
+#!/bin/bash
+
+count_objects() {
+  local object_count=$(ls | wc -l)
+  echo "Number of objects in current dir: ${object_count}"
+}
+
+count_objects
+
+
+# Task 3
+#!/bin/bash
+
+count_objects() {
+  read -p "Enter the dir to count the objects:" input  
+  local object_count=$(ls "${input}"| wc -l)
+  echo "Number of objects in ${input} : ${object_count}"
+}
+
+count_objects
+
+
+# Task 4
+#!/bin/bash
+
+PATHS=()
+
+while [ true ]
+do
+  read -p "Enter directory path: " input
+  
+  if [ "${input}" = "exit" ]
+  then
+    break
+  fi
+  
+  PATHS+=("${input}")
+done
+
+count_objects() {
+  local -n paths_array=$1
+  
+  for path in "${paths_array[@]}"
+  do
+    local object_count=$(ls "${path}" | wc -l)
+    echo "Number of objects in ${path}: ${object_count}"
+  done
+}
+
+count_objects PATHS
+
+# Task 5
+#!/bin/bash
+
+add() { echo "Result: $(($1 + $2))"; }
+subtract() { echo "Result: $(($1 - $2))"; }
+multiply() { echo "Result: $(($1 * $2))"; }
+divide() { 
+  if [ $2 -eq 0 ]; then
+    echo "Result: undefined"
+  else
+    echo "Result: $(($1 / $2))"
+  fi
+}
+
+while [ true ]
+do
+  read -p "Choose operation (+, -, *, /) or type 'exit' to quit: " op
+  
+  if [ "$op" = "exit" ]; then
+    echo "Exiting calculator!"
+    break
+  fi
+
+  if [ "$op" = "+" ] || [ "$op" = "-" ] || [ "$op" = "*" ] || [ "$op" = "/" ]; then
+    read -p "Enter first number: " num1
+    read -p "Enter second number: " num2
+
+    if [ "$op" = "+" ]; then
+      add $num1 $num2
+    elif [ "$op" = "-" ]; then
+      subtract $num1 $num2
+    elif [ "$op" = "*" ]; then
+      multiply $num1 $num2
+    elif [ "$op" = "/" ]; then
+      divide $num1 $num2
+    fi
+  else
+    echo "Invalid operation. Try again."
+  fi
+done
