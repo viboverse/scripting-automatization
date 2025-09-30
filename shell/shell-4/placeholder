@@ -1,0 +1,138 @@
+# Task 1
+#!/bin/bash
+
+ping_url() {
+  local url=$1
+  ping -c 1 "${url}" > /dev/null 2>&1
+  
+  if [ $? -eq 0 ]
+  then
+    return 0
+  else
+    return 1
+  fi
+}
+
+read -p "Enter URL to ping: " url
+
+ping_url "${url}"
+
+if [ $? -eq 0 ]
+then
+  echo "Ping successful!"
+else
+  echo "Ping failed!"
+fi
+
+
+# Task 2
+#!/bin/bash
+
+for i in {1..3}
+do
+  random_num=$RANDOM
+
+  echo "Random number ${i}: ${random_num}"
+
+  logger -p user.info "Generated random number ${i}: ${random_num}"
+done
+
+
+# Task 3
+#!/bin/bash
+
+read -p "Enter the package name to install: " package
+
+echo "installing ${package}..."
+
+sudo apt install -y "${package}"
+
+if [ $? -eq 0 ]
+then
+  echo "The ${package} installed succefully!"
+else
+  echo "Faild to install!"
+  exit 111
+fi
+
+
+# Task 4
+#!/bin/bash
+network_information() {
+  local info=()
+  
+  local ip_addr=$(ip route get 1.1.1.1 | grep -oP 'src \K\S+')
+  local host_name=$(hostname)
+  
+  info[0]="ip address: ${ip_addr}"
+  info[1]="hostname: ${host_name}"
+  
+  for line in "${info[@]}"
+  do
+    echo "${line}"
+  done
+  
+  for line in "${info[@]}"
+  do
+    logger -t "network-information" "${line}"
+  done
+}
+
+network_information
+
+
+# Task 5
+#!/bin/bash
+set -xv
+
+FOLDER_PATH=""
+
+mk_folder() {
+  read -p "Enter new folder path: " FOLDER_PATH
+  mkdir -p "${FOLDER_PATH}"
+  
+  if [ $? -eq 0 ]
+  then
+    echo "Folder created successfully: ${FOLDER_PATH}"
+    return 0
+  else
+    echo "Failed to create folder: ${FOLDER_PATH}"
+    return 1
+  fi
+}
+
+download_image() {
+  local image_url="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tux.svg/1200px-Tux.svg.png"
+  
+  wget -O "${FOLDER_PATH}/linux-tux.png" "${image_url}"
+  
+  if [ $? -eq 0 ]
+  then
+    echo "Image downloaded successfully to ${FOLDER_PATH}/linux-tux.png"
+    return 0
+  else
+    echo "Failed to download image"
+    return 1
+  fi
+}
+
+change_perm() {
+  chmod 700 "${FOLDER_PATH}"
+  
+  chmod 700 "${FOLDER_PATH}/linux-tux.png"
+  
+  if [ $? -eq 0 ]
+  then
+    echo "Permissions changed successfully"
+    return 0
+  else
+    echo "Failed to change permissions"
+    return 1
+  fi
+}
+
+mk_folder
+download_image
+change_perm
+
+echo "All tasks completed!"
