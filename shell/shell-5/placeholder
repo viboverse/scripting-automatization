@@ -1,0 +1,218 @@
+# Task 1
+#!/bin/bsh
+
+echo "Enter Animal Names (type exit = stop):"
+
+while [ true ]
+do
+  read -p "Enter Animal Name: " animal
+
+  if [ "${animal}" = "exit" ]
+  then
+    break
+  fi
+
+ echo "${animal}" >> animal.txt
+done
+
+echo ""
+echo "All animals from the file: "
+
+while read line
+do
+  echo "${line}"
+done < animal.txt
+
+# Task 2
+#!/bin/bsh
+
+filename=$1
+line_number=0
+
+while IFS=',' read -r manufacturer model year color
+do
+  if [ ${line_number} -eq 0 ]
+  then
+    line_number=$((line_number + 1))
+    continue
+  fi
+
+  echo "--- Line ${line_number} ---"
+  echo "Manufacturer: ${manufacturer}"
+  echo "Model: ${model}"
+  echo "Color: ${color}"
+  echo "Year: ${year}"
+  line_number=$((line_number + 1))
+done < "${filename}"
+
+
+#Task 3
+#!/bin/bash
+
+add_car() {
+  local new_entry=$1
+  local filename=$2
+  
+  echo "${new_entry}" >> "${filename}"
+  echo "New car added successfully!"
+}
+
+if [ $# -eq 0 ]
+then
+  echo "Usage: $0 cars.csv"
+  exit 1
+fi
+
+filename=$1
+line_number=0
+
+echo "Current cars in file:"
+echo ""
+
+while IFS=',' read -r manufacturer model year color
+do
+  if [ ${line_number} -eq 0 ]
+  then
+    line_number=$((line_number + 1))
+    continue
+  fi
+  
+  echo "--- Line ${line_number} ---"
+  echo "Manufacturer: ${manufacturer}"
+  echo "Model: ${model}"
+  echo "Color: ${color}"
+  echo "Year: ${year}"
+  line_number=$((line_number + 1))
+done < "${filename}"
+
+# Ask user for new car information
+echo ""
+echo "Add a new car:"
+read -p "Enter manufacturer: " new_manufacturer
+read -p "Enter model: " new_model
+read -p "Enter year: " new_year
+read -p "Enter color: " new_color
+
+new_car="${new_manufacturer},${new_model},${new_year},${new_color}"
+
+add_car "${new_car}" "${filename}"
+
+
+line_number=0
+while IFS=',' read -r manufacturer model year color
+do
+  if [ ${line_number} -eq 0 ]
+  then
+    line_number=$((line_number + 1))
+    continue
+  fi
+  
+  echo "--- Line ${line_number} ---"
+  echo "Manufacturer: ${manufacturer}"
+  echo "Model: ${model}"
+  echo "Color: ${color}"
+  echo "Year: ${year}"
+  line_number=$((line_number + 1))
+done < "${filename}"
+
+
+#!/bin/bash
+
+# Task 4
+change_config() {
+  local new_port=$1
+  local new_page=$2
+  local config_file="example.conf"
+  
+  sed -i "0,/80/{s/80/${new_port}/}" "${config_file}"
+  
+  sed -i "0,/80/{s/80/${new_port}/}" "${config_file}"
+  
+  sed -i "s/index\.html/${new_page}/" "${config_file}"
+  
+  echo "Configuration updated successfully!"
+  echo "Ports changed to: ${new_port}"
+  echo "Default page changed to: ${new_page}"
+}
+
+if [ $# -lt 2 ]
+then
+  echo "Usage: $0 <port> <page>"
+  echo "Example: $0 8080 main.html"
+  exit 1
+fi
+
+new_port=$1
+new_page=$2
+
+change_config "${new_port}" "${new_page}"
+
+echo ""
+echo "Updated configuration:"
+cat example.conf
+
+
+# Task 5
+#!/bin/bash
+
+json_file="superhero.json"
+
+# Check if jq is installed
+if ! command -v jq &> /dev/null
+then
+  echo "jq is not installed. Install it with: sudo apt install jq"
+  exit 1
+fi
+
+if [ ! -f "${json_file}" ]
+then
+  echo "Error: ${json_file} not found!"
+  exit 1
+fi
+
+while [ true ]
+do
+  echo ""
+  echo "=== Superhero Information ==="
+  echo ""
+  
+  echo "Available heroes:"
+  jq -r '.members[].name' "${json_file}"
+  
+  echo ""
+  read -p "Enter hero name (or 'exit' to quit): " hero_name
+  
+  if [ "${hero_name}" = "exit" ]
+  then
+    echo "Exiting script. Goodbye!"
+    break
+  fi
+  
+  hero_exists=$(jq -r ".members[] | select(.name | ascii_downcase == \"${hero_name,,}\") | .name" "${json_file}")
+  
+  if [ -z "${hero_exists}" ]
+  then
+    echo "Hero not found! Please check the spelling."
+    continue
+  fi
+  
+  echo ""
+  echo "What do you want to see?"
+  echo "1) Powers"
+  echo "2) Secret Identity"
+  read -p "Enter your choice (1 or 2): " choice
+  
+  if [ "${choice}" = "1" ]
+  then
+    echo ""
+    echo "Powers of ${hero_exists}:"
+    jq -r ".members[] | select(.name | ascii_downcase == \"${hero_name,,}\") | .powers[]" "${json_file}"
+  elif [ "${choice}" = "2" ]
+  then
+    echo ""
+    echo "Secret Identity of ${hero_exists}:"
+    jq -r ".members[] | select(.name | ascii_downcase == \"${hero_name,,}\") | .secretIdentity" "${json_file}"
+  else
+    echo "Invalid choice!"
+  fi
+done
